@@ -22,7 +22,7 @@ public class ListViewMainContentAdapter extends BaseAdapter
 	private List<XContent> listItems;// 数据集合
 	private LayoutInflater listContainer;// 视图容器
 	private int itemViewResource;// 自定义项视图源
-
+	private boolean isMarket ;
 	static class ListItemView
 	{ // 自定义控件集合
 		public ImageView face;
@@ -31,6 +31,7 @@ public class ListViewMainContentAdapter extends BaseAdapter
 		public TextView date;
 		public TextView count;
 		public TextView summary ; //内容摘要
+		public TextView price ;
 	}
 
 	/**
@@ -46,8 +47,12 @@ public class ListViewMainContentAdapter extends BaseAdapter
 		this.listContainer = LayoutInflater.from(context); // 创建视图容器并设置上下文
 		this.itemViewResource = resource;
 		this.listItems = data;
+		isMarket=false;
 	}
-
+	public ListViewMainContentAdapter(Context context, List<XContent> data, int resource,boolean isMarket){
+		this(context, data, resource);
+		this.isMarket=isMarket;
+	}
 	@Override
 	public int getCount()
 	{
@@ -79,15 +84,18 @@ public class ListViewMainContentAdapter extends BaseAdapter
 		{
 			// 获取list_item布局文件的视图
 			convertView = listContainer.inflate(this.itemViewResource, null);
-
+			
 			listItemView = new ListItemView();
 			// 获取控件对象
 			listItemView.face = (ImageView) convertView.findViewById(R.id.main_listitem_userface);
 			listItemView.title = (TextView) convertView.findViewById(R.id.main_listitem_title);
 			listItemView.author = (TextView) convertView.findViewById(R.id.main_listitem_author);
-			listItemView.count = (TextView) convertView.findViewById(R.id.main_listitem_count);
 			listItemView.date = (TextView) convertView.findViewById(R.id.main_listitem_date);
 			listItemView.summary = (TextView) convertView.findViewById(R.id.main_listitem_Summary);
+			if(isMarket)
+				listItemView.price = (TextView) convertView.findViewById(R.id.main_listitem_price);
+			else
+				listItemView.count = (TextView) convertView.findViewById(R.id.main_listitem_count);
 			// 设置控件集到convertView
 			convertView.setTag(listItemView);
 		} else
@@ -113,7 +121,10 @@ public class ListViewMainContentAdapter extends BaseAdapter
 		listItemView.title.setTag(con);// 设置隐藏参数(实体类)
 		
 		listItemView.date.setText(StringUtils.friendly_time(con.getConPubTime().toString()));
-		listItemView.count.setText(con.getConPls() + "回|" + con.getConHot() + "阅");
+		if(isMarket)
+			listItemView.price.setText(con.getPrice()+"元");
+		else
+			listItemView.count.setText(con.getConPls() + "回|" + con.getConHot() + "阅");
 		if(con.getConSummary()!=null&&(!con.getConSummary().equals(""))){
 			listItemView.summary.setVisibility(View.VISIBLE);
 			listItemView.summary.setText(con.getConSummary());

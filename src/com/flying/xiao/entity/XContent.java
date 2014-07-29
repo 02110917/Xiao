@@ -10,15 +10,9 @@ public class XContent extends Base
 	private String conImageUrl ;
 	private String userRealNama ;
 	private List<XPraise> praiseList ;
-	private boolean meIsPraise=false ;
-	public boolean isMeIsPraise()
-	{
-		return meIsPraise;
-	}
-	public void setMeIsPraise(boolean meIsPraise)
-	{
-		this.meIsPraise = meIsPraise;
-	}
+	private double price ;
+	private boolean isMeIsPraise;
+	
 	public List<XPraise> getPraiseList()
 	{
 		return praiseList;
@@ -34,6 +28,14 @@ public class XContent extends Base
 	public void setUserRealNama(String userRealNama)
 	{
 		this.userRealNama = userRealNama;
+	}
+	public boolean isMeIsPraise()
+	{
+		return isMeIsPraise;
+	}
+	public void setMeIsPraise(boolean isMeIsPraise)
+	{
+		this.isMeIsPraise = isMeIsPraise;
 	}
 	private Timestamp conPubTime;
 	private Integer conZan;
@@ -135,4 +137,13 @@ public class XContent extends Base
 	{
 		this.conTypeId = conTypeId;
 	}
+	public double getPrice()
+	{
+		return price;
+	}
+	public void setPrice(double price)
+	{
+		this.price = price;
+	}
+	
 }

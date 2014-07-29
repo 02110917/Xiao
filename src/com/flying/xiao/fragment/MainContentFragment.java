@@ -55,7 +55,10 @@ public class MainContentFragment extends Fragment
 	{
 		mPullDownListview = (PullDownListView) v.findViewById(R.id.main_fragment_list_view_news);
 		mListView = mPullDownListview.mListView;
-		mAdapter = new ListViewMainContentAdapter(getActivity(), mContentList, R.layout.main_fragment_news_listitem);
+		if(conType==Constant.ContentType.CONTENT_TYPE_MARKET)
+			mAdapter= new ListViewMainContentAdapter(getActivity(), mContentList, R.layout.main_fragment_market_listitem,true);
+		else
+			mAdapter = new ListViewMainContentAdapter(getActivity(), mContentList, R.layout.main_fragment_news_listitem);
 		mListView.setAdapter(mAdapter);
 		mHandler = new Handler()
 		{

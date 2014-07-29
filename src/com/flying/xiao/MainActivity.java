@@ -24,7 +24,6 @@ import com.flying.xiao.common.UIHelper;
 import com.flying.xiao.constant.Constant;
 import com.flying.xiao.fragment.MainContentFragment;
 import com.flying.xiao.fragment.MainDiary;
-import com.flying.xiao.fragment.MainMarket;
 
 public class MainActivity extends BaseActivity
 {
@@ -107,7 +106,8 @@ public class MainActivity extends BaseActivity
 		Fragment mainDiary=new MainDiary() ;
 		Fragment mainAsk=new MainContentFragment() ;
 		((MainContentFragment) mainAsk).setConType(Constant.ContentType.CONTENT_TYPE_ASK);
-		Fragment mainMarket=new MainMarket() ;
+		Fragment mainMarket=new MainContentFragment() ;
+		((MainContentFragment) mainMarket).setConType(Constant.ContentType.CONTENT_TYPE_MARKET);
 		mainFragmentList.add(mainNews);
 		mainFragmentList.add(mainLost);
 		mainFragmentList.add(mainDiary);
