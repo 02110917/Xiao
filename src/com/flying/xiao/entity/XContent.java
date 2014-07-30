@@ -12,7 +12,24 @@ public class XContent extends Base
 	private List<XPraise> praiseList ;
 	private double price ;
 	private boolean isMeIsPraise;
+	private List<XImage> images;
 	
+	public List<XImage> getImages()
+	{
+		return images;
+	}
+	public void setImages(List<XImage> images)
+	{
+		this.images = images;
+	}
+	public boolean isMeIsPraise()
+	{
+		return isMeIsPraise;
+	}
+	public void setMeIsPraise(boolean isMeIsPraise)
+	{
+		this.isMeIsPraise = isMeIsPraise;
+	}
 	public List<XPraise> getPraiseList()
 	{
 		return praiseList;
@@ -28,14 +45,6 @@ public class XContent extends Base
 	public void setUserRealNama(String userRealNama)
 	{
 		this.userRealNama = userRealNama;
-	}
-	public boolean isMeIsPraise()
-	{
-		return isMeIsPraise;
-	}
-	public void setMeIsPraise(boolean isMeIsPraise)
-	{
-		this.isMeIsPraise = isMeIsPraise;
 	}
 	private Timestamp conPubTime;
 	private Integer conZan;

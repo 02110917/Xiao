@@ -3,7 +3,7 @@ import java.io.Serializable;
 
 public class URLs implements Serializable {
 	
-	public final static String HOST = "http://192.168.23.1:8080";
+	public final static String HOST = "http://la.xiaolife.net:8080";
 	public final static String HTTP = "http://";
 	public final static String HTTPS = "https://";
 	
