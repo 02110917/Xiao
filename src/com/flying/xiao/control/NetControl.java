@@ -15,6 +15,7 @@ import com.flying.xiao.entity.XComment;
 import com.flying.xiao.entity.XContent;
 import com.flying.xiao.entity.XContentDetail;
 import com.flying.xiao.entity.XGoodType;
+import com.flying.xiao.entity.XMarketDetail;
 import com.flying.xiao.entity.XPraise;
 import com.flying.xiao.entity.XUserInfo;
 import com.flying.xiao.http.HttpUtil;
@@ -90,14 +91,22 @@ public class NetControl
 	 * @param contentType
 	 * @param contentId
 	 */
-	public void getContentDetail(int contentType,long contentId){
+	public void getContentDetail(final int contentType,long contentId){
 		//http://192.168.0.8:8080/XiaoServer/servlet/GetContentDetail?type=1&id=17
 		final String url=URLs.URL_GET_CONTENT_DETAIL+"?type="+contentType+"&id="+contentId;
 		new Thread(){
 			@Override
 			public void run() {
 				Message msg =new Message();
-				XContentDetail conDetail =HttpUtil.getContentDetail(appContext,url);
+				String result=HttpUtil.getContentDetail(appContext,url);
+				Base conDetail=null;
+				if(contentType==Constant.ContentType.CONTENT_TYPE_NEWS||contentType==Constant.ContentType.CONTENT_TYPE_ASK){
+					conDetail=new XContentDetail() ;
+				}else if(contentType==Constant.ContentType.CONTENT_TYPE_MARKET){
+					conDetail=new XMarketDetail() ;
+				}
+				conDetail=conDetail.jsonToBase(result);
+//				Base conDetail =HttpUtil.getContentDetail(appContext,url);
 				if(conDetail==null){
 					msg.what=Constant.HandlerMessageCode.CONTENT_DETAIL_LOAD_DATA_ERROR;
 					msg.obj = "获取信息出错...";
