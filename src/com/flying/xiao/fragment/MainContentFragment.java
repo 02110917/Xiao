@@ -1,6 +1,5 @@
 package com.flying.xiao.fragment;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import android.annotation.SuppressLint;
@@ -17,6 +16,7 @@ import android.widget.ListView;
 
 import com.flying.xiao.R;
 import com.flying.xiao.adapter.ListViewMainContentAdapter;
+import com.flying.xiao.app.AppContext;
 import com.flying.xiao.common.UIHelper;
 import com.flying.xiao.constant.Constant;
 import com.flying.xiao.control.NetControl;
@@ -24,22 +24,21 @@ import com.flying.xiao.entity.XContent;
 import com.flying.xiao.widget.PullDownListView;
 
 @SuppressLint("ValidFragment")
-public class MainContentFragment extends Fragment
+public class MainContentFragment extends Fragment implements PullDownListView.OnRefreshListioner
 {
 	private static final String TAG = "MainNews";
 	private PullDownListView mPullDownListview;
 	private ListView mListView;
-	private List<XContent> mContentList;
 	private ListViewMainContentAdapter mAdapter;
 	private Handler mHandler;
+	private AppContext appContext ;
 	private int mCurPage = 0;
-
 	private int conType;
 	@Override
 	public void onCreate(Bundle savedInstanceState)
 	{
-		mContentList = new ArrayList<XContent>();
 		super.onCreate(savedInstanceState);
+		appContext=(AppContext) getActivity().getApplication();
 	}
 
 	@Override
@@ -55,11 +54,13 @@ public class MainContentFragment extends Fragment
 	{
 		mPullDownListview = (PullDownListView) v.findViewById(R.id.main_fragment_list_view_news);
 		mListView = mPullDownListview.mListView;
+		
 		if(conType==Constant.ContentType.CONTENT_TYPE_MARKET)
-			mAdapter= new ListViewMainContentAdapter(getActivity(), mContentList, R.layout.main_fragment_market_listitem,true);
+			mAdapter= new ListViewMainContentAdapter(getActivity(), appContext.contentManager.getContentListByType(conType), R.layout.main_fragment_market_listitem,true);
 		else
-			mAdapter = new ListViewMainContentAdapter(getActivity(), mContentList, R.layout.main_fragment_news_listitem);
+			mAdapter = new ListViewMainContentAdapter(getActivity(), appContext.contentManager.getContentListByType(conType), R.layout.main_fragment_news_listitem);
 		mListView.setAdapter(mAdapter);
+		mPullDownListview.setRefreshListioner(this);
 		mHandler = new Handler()
 		{
 
@@ -70,13 +71,22 @@ public class MainContentFragment extends Fragment
 				switch (msg.what)
 				{
 				case Constant.HandlerMessageCode.MAIN_LOAD_DATA_ERROR:
+					mPullDownListview.onRefreshComplete();
+					mPullDownListview.onLoadMoreComplete();
 					UIHelper.ToastMessage(getActivity(), R.string.main_fragment_load_data_error);
 					break;
 
 				case Constant.HandlerMessageCode.MAIN_LOAD_DATA_SUCCESS:
-
-					mContentList.clear();
-					mContentList.addAll((List<XContent>) msg.obj);
+					mPullDownListview.onRefreshComplete();
+					mPullDownListview.onLoadMoreComplete();
+					if(mCurPage==0) //如果是刷新获得重新加载  则清楚之前的数据
+						appContext.contentManager.getContentListByType(conType).clear();
+					List<XContent> list=(List<XContent>) msg.obj;
+					if(list.size()==Constant.MAX_PAGE_COUNT)
+						mPullDownListview.setMore(true);
+					else if(list.size()<Constant.MAX_PAGE_COUNT)
+						mPullDownListview.setMore(false);
+					appContext.contentManager.getContentListByType(conType).addAll(list);
 					mAdapter.notifyDataSetChanged();
 
 					break;
@@ -92,12 +102,26 @@ public class MainContentFragment extends Fragment
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id)
 			{
-				UIHelper.showContentInfo(getActivity(),mContentList.get(position-1),conType);
+				UIHelper.showContentInfo(getActivity(),position-1,conType);
 			}
 		});
 	}
 	public void setConType(int conType)
 	{
 		this.conType = conType;
+	}
+
+	@Override
+	public void onRefresh()
+	{
+		mCurPage=0;
+		NetControl.getShare(getActivity()).getContentData(conType, 0, mHandler);
+	}
+
+	@Override
+	public void onLoadMore()
+	{
+		mCurPage++;
+		NetControl.getShare(getActivity()).getContentData(conType, mCurPage, mHandler);
 	}
 }

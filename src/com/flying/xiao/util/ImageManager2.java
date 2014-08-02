@@ -28,7 +28,6 @@ import com.flying.xiao.http.HttpUtil;
 /**
  * 图片加载类
  * 
- * @author 月月鸟
  */
 public class ImageManager2 {
 

@@ -3,16 +3,17 @@ package com.flying.xiao;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.ImageView.ScaleType;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -43,8 +44,9 @@ public class MarketDetail extends BaseActivity{
 	/**
 	 * view
 	 */
+	private TextView mHeadText ;
 	private ImageView mBack; // 返回按钮
-	private ImageView mRefresh;// 刷新按钮
+	private ImageView mFavorite;// 收藏按钮
 	private ProgressBar mProgressbar; // 进度条
 	private TextView mTitle;
 	private TextView mPubTime;
@@ -61,41 +63,52 @@ public class MarketDetail extends BaseActivity{
 	private TextView mCallPhone ; //电话
 	private TextView mSendMsg ; //短信
 	private TextView mWriteWords ; //留言
+	private TextView indexView;
 	private XContent con;
-	private AppContext appContext;
 	private Handler mCommentHandler;
 	private List<XImage>imageUrls;
 	private List<View> images ;
 	private XContentDetail conDetail ;
+	private Resources resources ;
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.market_detail);
+		resources=this.getResources();
 		this.initView();
 		this.initData();
-		appContext = (AppContext) this.getApplication();
 		
 	}
 	
 	private void initView()
 	{
-		con = (XContent) getIntent().getSerializableExtra("content");
+		int index=getIntent().getIntExtra("content", 0);
+		con = appContext.contentManager.getMarketContentList().get(index);
 		imageUrls=con.getImages();
 		images=new ArrayList<View>();
 		if(imageUrls!=null&&imageUrls.size()>0){
 			for(XImage image:imageUrls){
 				String url=URLs.HOST+image.getImageUrl();
 				ImageView imageView=new ImageView(this) ;
-				imageView.setScaleType(ScaleType.FIT_XY);
-				ImageManager2.from(this).displayImage(imageView, url, R.drawable.widget_dface);
+//				imageView.setScaleType(ScaleType.FIT_XY);
+				ImageManager2.from(this).displayImage(imageView, url, -1);
 				imageView.setTag(url);
 				images.add(imageView);
 			}
 		}
+		mHeadText=(TextView)findViewById(R.id.content_detail_head_title);
+		mHeadText.setText("详情");
+		indexView=(TextView)findViewById(R.id.showpagerindex);
+		indexView.setText("1/"+images.size());
 		mBack = (ImageView) findViewById(R.id.content_detail_back);
 		mBack.setOnClickListener(UIHelper.finish(this));
-		mRefresh = (ImageView) findViewById(R.id.content_detail_refresh);
+		mFavorite = (ImageView) findViewById(R.id.content_detail_refresh);
+		if(con.isMeCollecte())
+			mFavorite.setImageDrawable(resources.getDrawable(R.drawable.head_favorite_y));
+		else
+			mFavorite.setImageDrawable(resources.getDrawable(R.drawable.head_favorite));
+		mFavorite.setOnClickListener(collectClickListener);
 		mProgressbar = (ProgressBar) findViewById(R.id.content_detail_head_progress);
 		mTitle=(TextView)findViewById(R.id.market_detail_title);
 		mPubTime=(TextView)findViewById(R.id.market_detail_pub_time);
@@ -122,6 +135,7 @@ public class MarketDetail extends BaseActivity{
 		mPubname.setText(con.getUserRealNama());
 		MypaperAdapter adapter=new MypaperAdapter();
 		mImagePage.setAdapter(adapter);
+		mImagePage.setOnPageChangeListener(pageChangeListener);
 	}
 	
 	private void initData()
@@ -146,7 +160,22 @@ public class MarketDetail extends BaseActivity{
 					headButtonSwitch(DATA_LOAD_COMPLETE);
 					mDetailInfo.setText(xmarketDetail.getEsMiaoshu());
 					mPhone.setText(xmarketDetail.getEsPhone());
+					mPubname.setText(xmarketDetail.getEsName());
 					break ;
+				case Constant.HandlerMessageCode.COLLECTION_OPERATE_FAIL:
+					UIHelper.ToastMessage(MarketDetail.this, "操作失败...");
+					break ;
+				case Constant.HandlerMessageCode.COLLECTION_OPERATE_SUCCESS:
+					con.setMeCollecte(!con.isMeCollecte());
+					if(con.isMeCollecte())
+						mFavorite.setImageDrawable(resources.getDrawable(R.drawable.head_favorite_y));
+					else
+						mFavorite.setImageDrawable(resources.getDrawable(R.drawable.head_favorite));
+					break ;
+				case Constant.HandlerMessageCode.USER_NOT_LOGIN:
+					UIHelper.ToastMessage(MarketDetail.this, R.string.user_login_out_of_date);
+					UIHelper.showLoginDialog(MarketDetail.this);
+					break;
 				default:
 					break;
 				}
@@ -173,15 +202,15 @@ public class MarketDetail extends BaseActivity{
 		{
 		case DATA_LOAD_ING:
 			mProgressbar.setVisibility(View.VISIBLE);
-			mRefresh.setVisibility(View.GONE);
+			mFavorite.setVisibility(View.GONE);
 			break;
 		case DATA_LOAD_COMPLETE:
 			mProgressbar.setVisibility(View.GONE);
-			mRefresh.setVisibility(View.VISIBLE);
+			mFavorite.setVisibility(View.VISIBLE);
 			break;
 		case DATA_LOAD_FAIL:
 			mProgressbar.setVisibility(View.GONE);
-			mRefresh.setVisibility(View.VISIBLE);
+			mFavorite.setVisibility(View.VISIBLE);
 			break;
 		}
 	}
@@ -190,14 +219,12 @@ public class MarketDetail extends BaseActivity{
 		@Override
 		public int getCount()
 		{
-			// TODO Auto-generated method stub
 			return images.size();
 		}
 
 		@Override
 		public boolean isViewFromObject(View arg0, Object arg1)
 		{
-			// TODO Auto-generated method stub
 			return arg0 == arg1;
 		}
 
@@ -216,4 +243,37 @@ public class MarketDetail extends BaseActivity{
 		
 		
 	}
+	/**
+	 * 收藏操作 按钮监听
+	 */
+	private View.OnClickListener collectClickListener = new View.OnClickListener()
+	{
+		@Override
+		public void onClick(View v)
+		{
+			NetControl.getShare(MarketDetail.this).collectOperate(con.getId(), con.isMeCollecte());
+//			NetControl.getShare(MarketDetail.this).getContentDetail(Constant.ContentType.CONTENT_TYPE_MARKET, con.getId());
+//			headButtonSwitch(DATA_LOAD_ING);
+		}
+	};
+	private OnPageChangeListener pageChangeListener=new OnPageChangeListener()
+	{
+		
+		@Override
+		public void onPageSelected(int arg0)
+		{
+			indexView.setText((arg0+1)+"/"+images.size());
+		}
+		
+		@Override
+		public void onPageScrolled(int arg0, float arg1, int arg2)
+		{
+			
+		}
+		
+		@Override
+		public void onPageScrollStateChanged(int arg0)
+		{
+		}
+	};
 }

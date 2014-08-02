@@ -18,7 +18,7 @@
             android:orientation="vertical" >
 
             <android.support.v4.view.ViewPager
-                android:id="@+id/market_detail_image_page"
+                android:id="@+id/lost_detail_image_page"
                 android:layout_width="fill_parent"
                 android:layout_height="180dip"
                 android:focusable="true" />
@@ -27,7 +27,7 @@
                 android:id="@+id/line1"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/market_detail_image_page"
+                android:layout_below="@id/lost_detail_image_page"
                 android:layout_marginBottom="2dp"
                 android:layout_marginTop="2dp"
                 android:scaleType="fitXY"
@@ -40,20 +40,18 @@
                 android:layout_below="@id/line1" >
 
                 <TextView
-                    android:id="@+id/market_detail_title"
+                    android:id="@+id/lost_detail_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentTop="true"
                     android:layout_marginLeft="10dp"
-                    android:layout_toLeftOf="@+id/market_detail_scantimes"
                     android:gravity="center_vertical"
-                    
                     android:textColor="@android:color/black"
                     android:textSize="@dimen/text_size_20" />
 
                 <TextView
-                    android:id="@+id/market_detail_pub_time"
+                    android:id="@+id/lost_detail_pub_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentBottom="true"
@@ -66,28 +64,15 @@
                     android:textSize="@dimen/text_size_18" />
 
                 <TextView
-                    android:id="@+id/market_detail_scantimes"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/lost_detail_place"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
-                    android:layout_alignParentRight="true"
-                    android:layout_marginRight="10dp"
+                    android:layout_alignLeft="@+id/lost_detail_title"
+                    android:layout_centerVertical="true"
+                    android:textSize="@dimen/text_size_18"
                     android:drawableLeft="@drawable/time_icon_normal"
-                    android:drawablePadding="5dp"
-                    android:gravity="center_vertical"
-                    
-                    android:textSize="@dimen/text_size_18" />
+                     />
 
-                <TextView
-                    android:id="@+id/market_detail_price"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
-                    android:layout_alignRight="@+id/market_detail_scantimes"
-                    android:gravity="center_vertical"
-                    android:text="20元"
-                    android:textColor="#ff4500"
-                    android:textSize="@dimen/text_size_22" />
             </RelativeLayout>
 
             <ImageView
@@ -112,7 +97,7 @@
                 android:textSize="@dimen/text_size_20" />
 
             <TextView
-                android:id="@+id/market_detail_info"
+                android:id="@+id/lost_detail_info"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_below="@id/textView1"
@@ -123,7 +108,7 @@
                 android:id="@+id/showpagerindex"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignBottom="@+id/market_detail_image_page"
+                android:layout_alignBottom="@+id/lost_detail_image_page"
                 android:layout_alignParentRight="true"
                 android:layout_marginBottom="15dp"
                 android:layout_marginRight="15dp"

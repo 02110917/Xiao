@@ -5,17 +5,13 @@
   	android:orientation="vertical"
   	android:background="@color/white">
 
-     <com.flying.xiao.widget.PullDownListView
-        android:id="@+id/comment_list_listview"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent" >
         <ListView
+            android:id="@+id/comment_list_listview"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_weight="0.0"
             android:divider="@null"
             android:drawSelectorOnTop="false"
             android:fadingEdgeLength="0.0sp" />
-    </com.flying.xiao.widget.PullDownListView>
     
 </LinearLayout>

@@ -31,8 +31,8 @@ import com.flying.xiao.control.NetControl;
 import com.flying.xiao.entity.XComment;
 import com.flying.xiao.entity.XContent;
 import com.flying.xiao.widget.PullDownListView;
-
-public class MainDiary extends Fragment
+ 
+public class MainDiary extends Fragment implements PullDownListView.OnRefreshListioner
 {
 
 	private static final String TAG = "MainDiary";
@@ -41,7 +41,7 @@ public class MainDiary extends Fragment
 	public LinearLayout pubCommentEditLin ;
 	public Button btnPubComment ;
 	public EditText etEditComment ;
-	private List<XContent> mNewsList;
+	private List<XContent> mDiaryList;
 	private ListViewMainDiaryAdapter mAdapter;
 	private Handler mHandler;
 	private int mCurPage = 0;
@@ -49,11 +49,13 @@ public class MainDiary extends Fragment
 	private long recommentId=0;
 	private boolean isRecomment ; //是否是回复已有的评论
 	private ProgressDialog mProgress;
+	private AppContext appContext ;
 	@Override
 	public void onCreate(Bundle savedInstanceState)
 	{
-		mNewsList = new ArrayList<XContent>();
 		super.onCreate(savedInstanceState);
+		appContext=(AppContext) getActivity().getApplication();
+		mDiaryList=appContext.contentManager.getDiaryContentList();
 	}
 
 	@Override
@@ -68,6 +70,7 @@ public class MainDiary extends Fragment
 	{
 		mPullDownListview = (PullDownListView) v.findViewById(R.id.main_fragment_list_view_diary);
 		mListView = mPullDownListview.mListView;
+		mPullDownListview.setRefreshListioner(this);
 		pubCommentEditLin=(LinearLayout)v.findViewById(R.id.diary_footer);
 		btnPubComment=(Button)v.findViewById(R.id.diary_foot_pubcomment);
 		etEditComment=(EditText)v.findViewById(R.id.diary_foot_editer);
@@ -94,12 +97,12 @@ public class MainDiary extends Fragment
 				if(isRecomment){
 					replyId=recommentId;
 				}
-				NetControl.getShare(getActivity()).pubComment(ac.getUserInfo().getId(),mNewsList.get(pubCommentPosition).getId(),
+				NetControl.getShare(getActivity()).pubComment(ac.getUserInfo().getId(),mDiaryList.get(pubCommentPosition).getId(),
 						_commentStr, replyId,mHandler);
 				mProgress = ProgressDialog.show(v.getContext(), null, "发表中···", true, true);
 			}
 		});
-		mAdapter = new ListViewMainDiaryAdapter(getActivity(),pubCommentEditLin, mNewsList, R.layout.main_fragment_diary_listitem);
+		mAdapter = new ListViewMainDiaryAdapter(getActivity(),pubCommentEditLin, mDiaryList, R.layout.main_fragment_diary_listitem);
 		mListView.setAdapter(mAdapter);
 		mListView.setOnScrollListener(new OnScrollListener()
 		{
@@ -149,12 +152,22 @@ public class MainDiary extends Fragment
 				switch (msg.what)
 				{
 				case Constant.HandlerMessageCode.MAIN_LOAD_DATA_ERROR:
+					mPullDownListview.onRefreshComplete();
+					mPullDownListview.onLoadMoreComplete();
 					UIHelper.ToastMessage(getActivity(), R.string.main_fragment_load_data_error);
 					break;
 
 				case Constant.HandlerMessageCode.MAIN_LOAD_DATA_SUCCESS:
-					mNewsList.clear();
-					mNewsList.addAll((List<XContent>) msg.obj);
+					mPullDownListview.onRefreshComplete();
+					mPullDownListview.onLoadMoreComplete();
+					if(mCurPage==0) //如果是刷新获得重新加载  则清楚之前的数据
+						mDiaryList.clear();
+					List<XContent> list=(List<XContent>) msg.obj;
+					if(list.size()==Constant.MAX_PAGE_COUNT)
+						mPullDownListview.setMore(true);
+					else if(list.size()<Constant.MAX_PAGE_COUNT)
+						mPullDownListview.setMore(false);
+					mDiaryList.addAll(list);
 					mAdapter.notifyDataSetChanged();
 
 					break;
@@ -177,7 +190,7 @@ public class MainDiary extends Fragment
 					etEditComment.clearFocus();
 					// 更新评论列表
 					XComment com = (XComment) msg.obj;
-					mNewsList.get(pubCommentPosition).getComments().add(com);
+					mDiaryList.get(pubCommentPosition).getComments().add(com);
 					mAdapter.notifyDataSetChanged();
 					break;
 				default:
@@ -187,6 +200,21 @@ public class MainDiary extends Fragment
 		};
 		NetControl.getShare(getActivity()).getContentData(Constant.ContentType.CONTENT_TYPE_DIARY, 0, mHandler);
 
+	}
+
+	@Override
+	public void onRefresh()
+	{
+		mCurPage=0;
+		NetControl.getShare(getActivity()).getContentData(Constant.ContentType.CONTENT_TYPE_DIARY, 0, mHandler);
+		
+	}
+
+	@Override
+	public void onLoadMore()
+	{
+		mCurPage++;
+		NetControl.getShare(getActivity()).getContentData(Constant.ContentType.CONTENT_TYPE_DIARY, mCurPage, mHandler);		
 	}
 
 }

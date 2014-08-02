@@ -187,10 +187,10 @@ public class ListViewMainDiaryAdapter extends BaseAdapter
 			{
 				XPraise xp = xpraises.get(i);
 
-				if (ac.isLogin() && xp.getUserInfo().getId().equals(ac.getUserInfo().getId()))
-				{
-					con.setMeIsPraise(true);
-				}
+//				if (ac.isLogin() && xp.getUserInfo().getId().equals(ac.getUserInfo().getId()))
+//				{
+//					con.setMeIsPraise(true);
+//				}
 
 				tv2.append(UIHelper.getClickableSpan(context, xp.getUserInfo()));
 				if (i != len - 1)

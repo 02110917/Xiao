@@ -35,12 +35,11 @@ import com.flying.xiao.entity.XComment;
 import com.flying.xiao.entity.XContent;
 import com.flying.xiao.entity.XContentDetail;
 import com.flying.xiao.widget.BadgeView;
-import com.flying.xiao.widget.PullDownListView;
 
 /**
  * 内容详情
  */
-public class ContentDetail extends BaseActivity
+public class ContentDetail extends BaseActivity 
 {
 
 	private ImageView mBack; // 返回按钮
@@ -60,12 +59,10 @@ public class ContentDetail extends BaseActivity
 	private TextView mAuthor; // 作者
 	private TextView mPubDate; // 发布时间
 	private TextView mCommentCount; // 评论数
-	private PullDownListView mLvComment;
-	private ListView mLv;
+	private ListView mLvComment;
 	private WebView mWebView; // 显示内容
 	private XContent con;
 	private int conType;
-	private AppContext appContext;
 	private final static int VIEWSWITCH_TYPE_DETAIL = 0x001;
 	private final static int VIEWSWITCH_TYPE_COMMENTS = 0x002;
 
@@ -93,25 +90,26 @@ public class ContentDetail extends BaseActivity
 	private InputMethodManager imm;
 
 	private String _commentStr;// 评论内容
-
 	@Override
 	public void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.content_detail);
-
 		this.initView();
 		this.initData();
-		appContext = (AppContext) this.getApplication();
 
 	}
 
 	// 初始化视图控件
 	private void initView()
 	{
-		con = (XContent) getIntent().getSerializableExtra("content");
+		int index=getIntent().getIntExtra("content", 0);
 		conType = getIntent().getIntExtra("conType", 0);
-
+		if(conType==Constant.ContentType.CONTENT_TYPE_NEWS)
+			con = appContext.contentManager.getNewsContentList().get(index);
+		else if(conType==Constant.ContentType.CONTENT_TYPE_ASK)
+			con = appContext.contentManager.getAskContentList().get(index);
+		
 		mBack = (ImageView) findViewById(R.id.content_detail_back);
 		mRefresh = (ImageView) findViewById(R.id.content_detail_refresh);
 		mProgressbar = (ProgressBar) findViewById(R.id.content_detail_head_progress);
@@ -123,7 +121,9 @@ public class ContentDetail extends BaseActivity
 		mCommentList = (ImageView) findViewById(R.id.content_detail_footbar_commentlist);
 		mShare = (ImageView) findViewById(R.id.content_detail_footbar_share);
 		mFavorite = (ImageView) findViewById(R.id.content_detail_footbar_favorite);
-
+		if(con.isMeCollecte()){
+			mFavorite.setImageResource(R.drawable.widget_bar_favorite_y);
+		}
 		mTitle = (TextView) findViewById(R.id.content_detail_title);
 		mAuthor = (TextView) findViewById(R.id.content_detail_author);
 		mPubDate = (TextView) findViewById(R.id.content_detail_date);
@@ -228,6 +228,7 @@ public class ContentDetail extends BaseActivity
 					mAuthor.setText(con.getUserRealNama());
 					mPubDate.setText(StringUtils.friendly_time(con.getConPubTime().toString()));
 					mCommentCount.setText(String.valueOf(con.getConPls()));
+					con.setConHot(con.getConHot()+1);
 					// 加载评论视图&数据
 					initCommentView();
 					//
@@ -290,7 +291,19 @@ public class ContentDetail extends BaseActivity
 					int count = lvCommentAdapter.getMainCommentList().size();
 					bv_comment.setText(count + "");
 					bv_comment.show();
+					con.setConPls(con.getConPls()+1);
+					mCommentCount.setText(con.getConPls()+"");
 					break;
+				case Constant.HandlerMessageCode.COLLECTION_OPERATE_FAIL:
+					UIHelper.ToastMessage(ContentDetail.this, "操作失败...");
+					break ;
+				case Constant.HandlerMessageCode.COLLECTION_OPERATE_SUCCESS:
+					con.setMeCollecte(!con.isMeCollecte());
+					if(con.isMeCollecte())
+						mFavorite.setImageResource(R.drawable.widget_bar_favorite_y);
+					else
+						mFavorite.setImageResource(R.drawable.widget_bar_favorite);
+					break ;
 				default:
 					break;
 				}
@@ -412,58 +425,7 @@ public class ContentDetail extends BaseActivity
 		@Override
 		public void onClick(View v)
 		{
-			// if(blogId == 0 || blogDetail == null){
-			// return;
-			// }
-			//
-			// final AppContext ac = (AppContext)getApplication();
-			// if(!ac.isLogin()){
-			// UIHelper.showLoginDialog(ContentDetail.this);
-			// return;
-			// }
-			// final int uid = ac.getLoginUid();
-			//
-			// final Handler handler = new Handler(){
-			// public void handleMessage(Message msg) {
-			// if(msg.what == 1){
-			// Result res = (Result)msg.obj;
-			// if(res.OK()){
-			// if(blogDetail.getFavorite() == 1){
-			// blogDetail.setFavorite(0);
-			// mFavorite.setImageResource(R.drawable.widget_bar_favorite);
-			// }else{
-			// blogDetail.setFavorite(1);
-			// mFavorite.setImageResource(R.drawable.widget_bar_favorite2);
-			// }
-			// //重新保存缓存
-			// ac.saveObject(blogDetail, blogDetail.getCacheKey());
-			// }
-			// UIHelper.ToastMessage(ContentDetail.this, res.getErrorMessage());
-			// }else{
-			// ((AppException)msg.obj).makeToast(ContentDetail.this);
-			// }
-			// }
-			// };
-			// new Thread(){
-			// public void run() {
-			// Message msg = new Message();
-			// Result res = null;
-			// try {
-			// if(blogDetail.getFavorite() == 1){
-			// res = ac.delFavorite(uid, blogId, FavoriteList.TYPE_BLOG);
-			// }else{
-			// res = ac.addFavorite(uid, blogId, FavoriteList.TYPE_BLOG);
-			// }
-			// msg.what = 1;
-			// msg.obj = res;
-			// } catch (AppException e) {
-			// e.printStackTrace();
-			// msg.what = -1;
-			// msg.obj = e;
-			// }
-			// handler.sendMessage(msg);
-			// }
-			// }.start();
+			NetControl.getShare(ContentDetail.this).collectOperate(con.getId(), con.isMeCollecte());
 		}
 	};
 
@@ -475,10 +437,9 @@ public class ContentDetail extends BaseActivity
 		lvComment_foot_progress = (ProgressBar) lvComment_footer.findViewById(R.id.listview_foot_progress);
 
 		lvCommentAdapter = new ListViewCommentAdapter(this, lvCommentData, R.layout.comment_listitem);
-		mLvComment = (PullDownListView) findViewById(R.id.comment_list_listview);
-		mLv = mLvComment.mListView;
-		mLv.setAdapter(lvCommentAdapter);
-		mLv.setOnItemClickListener(new OnItemClickListener()
+		mLvComment = (ListView) findViewById(R.id.comment_list_listview);
+		mLvComment.setAdapter(lvCommentAdapter);
+		mLvComment.setOnItemClickListener(new OnItemClickListener()
 		{
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id)

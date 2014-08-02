@@ -89,7 +89,7 @@ public class UIHelper
 	 * @param content
 	 * @param contentType
 	 */
-	public static void showContentInfo(Context context, XContent content, int contentType)
+	public static void showContentInfo(Context context, int index, int contentType)
 	{
 		Intent intent = new Intent();
 		if (contentType == Constant.ContentType.CONTENT_TYPE_ASK
@@ -107,7 +107,7 @@ public class UIHelper
 			intent.setClass(context, DiaryDetail.class);
 		}
 		intent.putExtra("conType", contentType);
-		intent.putExtra("content", content);
+		intent.putExtra("content", index);
 		context.startActivity(intent);
 	}
 

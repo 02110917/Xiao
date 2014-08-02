@@ -44,6 +44,7 @@ import com.flying.xiao.entity.XGoodType;
 import com.flying.xiao.entity.XPraise;
 import com.flying.xiao.entity.XUserInfo;
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 
 @SuppressWarnings("deprecation")
@@ -478,35 +479,21 @@ public class HttpUtil
 	public static List<XContent> getContentData(AppContext appContext, int type, int page)
 	{
 		List<XContent> xConList = null;
-		String url = "";
-		switch (type)
-		{
-		case Constant.ContentType.CONTENT_TYPE_NEWS:
-			url = URLs.URL_MAIN_NEWS;
-			break;
-		case Constant.ContentType.CONTENT_TYPE_LOST:
-			url = URLs.URL_MAIN_LOST;
-			break;
-		case Constant.ContentType.CONTENT_TYPE_DIARY:
-			url = URLs.URL_MAIN_DIARY;
-			break;
-		case Constant.ContentType.CONTENT_TYPE_MARKET:
-			url = URLs.URL_MAIN_MARKET;
-			break;
-		case Constant.ContentType.CONTENT_TYPE_ASK:
-			url = URLs.URL_MAIN_ASK;
-			break;
-		default:
-			break;
-		}
-		url += "&page=" + page;
+		String url = URLs.URL_MAIN_GET_CONTENT+"?type="+type+"&page=" + page;;
+		
 		try
 		{
 			String result = http_get(appContext, url);
 			Gson gson = new Gson();
+			try
+			{
 			xConList = gson.fromJson(result, new TypeToken<List<XContent>>()
+					
 			{
 			}.getType());
+			}catch(JsonSyntaxException e){
+				e.printStackTrace();
+			}
 		} catch (AppException e)
 		{
 			e.printStackTrace();
@@ -520,6 +507,7 @@ public class HttpUtil
 		try
 		{
 			result = http_get(appContext, url);
+			System.out.println("json---" + result);
 		} catch (AppException e)
 		{
 			// TODO Auto-generated catch block
@@ -616,7 +604,42 @@ public class HttpUtil
 			throw AppException.network(e);
 		}
 	}
+	/**
+	 * 收藏操作
+	 * @param appContext
+	 * @param contentId 内容id
+	 * @param isCancel 是否是取消收藏
+	 * @author zhangmin
+	 * @return
+	 * @throws AppException 
+	 */
+	public static Base collectionOperate(AppContext appContext,long contentId, boolean isCancel) throws AppException {
+		Map<String, String> params = new HashMap<String, String>();
+		params.put("contentid", contentId + "");
+		params.put("isCancel", isCancel + "");
+		String url = URLs.URL_CollectionOperate;
+		try
+		{
+			String result = http_post(appContext, url, params);
+			System.out.println("json---" + result);
+			Base base = new Base();
+			base = (Base) base.jsonToBase(result);
+			return base;
+		} catch (Exception e)
+		{
+			if (e instanceof AppException)
+				throw (AppException) e;
+			throw AppException.network(e);
+		}
+	}
 
+	/**'
+	 * 获取二手物品类型列表
+	 * @param appContext
+	 * @return
+	 * @author zhangmin
+	 * @throws AppException
+	 */
 	public static List<XGoodType> getMarketType(AppContext appContext) throws AppException
 	{
 		String result;
@@ -636,5 +659,40 @@ public class HttpUtil
 				throw (AppException) e;
 			throw AppException.network(e);
 		}
+	}
+	/**
+	 * 获取评论列表
+	 * @param appContext
+	 * @param contentid
+	 * @param page
+	 * @return
+	 * @throws AppException
+	 */
+	public static List<XComment> getComments(AppContext appContext,long contentid,int page) throws AppException{
+		List<XComment> commentList=null;
+		String result="";
+		String url=URLs.URL_GETCOMMENTS+"?contentid="+contentid+"&page="+page;
+		try
+		{
+			result=http_get(appContext, url);
+			System.out.println("json---" + result);
+			Gson gson = new Gson();
+			try
+			{
+				commentList = gson.fromJson(result, new TypeToken<List<XComment>>()
+			{
+			}.getType());
+			}
+			catch(JsonSyntaxException e){
+				e.printStackTrace();
+			}
+		} catch (AppException e)
+		{
+			e.printStackTrace();
+			if (e instanceof AppException)
+				throw (AppException) e;
+			throw AppException.network(e);
+		}
+		return commentList ;
 	}
 }

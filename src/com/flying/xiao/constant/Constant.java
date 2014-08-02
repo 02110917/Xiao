@@ -2,6 +2,7 @@ package com.flying.xiao.constant;
 
 public class Constant
 {
+	public static final int MAX_PAGE_COUNT=5;
 	public static class ErrorCode{
 		public static final int USER_LOGIN_ERROR=0X01;
 		public static final int PUB_COMMENT_ERROR=0X02;
@@ -36,6 +37,10 @@ public class Constant
 		public static final int PRAISE_OPERATE_SUCCESS=11;
 		public static final int GET_MARKET_TYPE_SUCCESS=12;
 		public static final int GET_MARKET_TYPE_ERROR=13;
+		public static final int COLLECTION_OPERATE_SUCCESS=14;
+		public static final int COLLECTION_OPERATE_FAIL=15;
+		public static final int GET_COMMENTS_FAIL=16;
+		public static final int GET_COMMENT_SUCCESS=17;
 		
 	}
 }

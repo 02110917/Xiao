@@ -31,6 +31,6 @@
 	   	android:layout_height="wrap_content" 
 	   	android:layout_gravity="right|center"
 	   	android:clickable="true" 
-	   	android:background="@drawable/head_refresh"
+	   	android:src="@drawable/head_refresh"
 		android:visibility="gone"/>
 </FrameLayout>

@@ -11,7 +11,8 @@ public class XContent extends Base
 	private String userRealNama ;
 	private List<XPraise> praiseList ;
 	private double price ;
-	private boolean isMeIsPraise;
+	private boolean isMeIsPraise; //我是否点赞  【在获取到User session的情况下返回】
+	private boolean isMeCollecte ; //我是否收藏【在获取到User session的情况下返回】
 	private List<XImage> images;
 	private Timestamp conPubTime;
 	private Integer conZan;
@@ -37,6 +38,15 @@ public class XContent extends Base
 	public void setMeIsPraise(boolean isMeIsPraise)
 	{
 		this.isMeIsPraise = isMeIsPraise;
+	}
+	
+	public boolean isMeCollecte()
+	{
+		return isMeCollecte;
+	}
+	public void setMeCollecte(boolean isMeCollecte)
+	{
+		this.isMeCollecte = isMeCollecte;
 	}
 	public List<XPraise> getPraiseList()
 	{

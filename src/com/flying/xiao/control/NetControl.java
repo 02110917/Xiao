@@ -15,6 +15,7 @@ import com.flying.xiao.entity.XComment;
 import com.flying.xiao.entity.XContent;
 import com.flying.xiao.entity.XContentDetail;
 import com.flying.xiao.entity.XGoodType;
+import com.flying.xiao.entity.XLostDetail;
 import com.flying.xiao.entity.XMarketDetail;
 import com.flying.xiao.entity.XPraise;
 import com.flying.xiao.entity.XUserInfo;
@@ -104,6 +105,8 @@ public class NetControl
 					conDetail=new XContentDetail() ;
 				}else if(contentType==Constant.ContentType.CONTENT_TYPE_MARKET){
 					conDetail=new XMarketDetail() ;
+				}else if(contentType==Constant.ContentType.CONTENT_TYPE_LOST){
+					conDetail=new XLostDetail();
 				}
 				conDetail=conDetail.jsonToBase(result);
 //				Base conDetail =HttpUtil.getContentDetail(appContext,url);
@@ -189,7 +192,7 @@ public class NetControl
 				try
 				{
 					XPraise base=HttpUtil.praiseContent(appContext, userId, contentId, isCancel);
-					if(base.getErrorCode()!=0)
+					if(base==null||base.getErrorCode()!=0)
 					{
 					if(base.getErrorCode()==Constant.ErrorCode.USER_NOT_LOGIN){
 						msg.what=Constant.HandlerMessageCode.USER_NOT_LOGIN;
@@ -250,5 +253,67 @@ public class NetControl
 				
 			}
 		}.start();
+	}
+
+	public void collectOperate(final long contentid,final boolean isCancel){
+		new Thread(new Runnable()
+		{
+			
+			@Override
+			public void run()
+			{
+				Message msg=new Message();
+				try
+				{
+					Base base=HttpUtil.collectionOperate(appContext, contentid, isCancel);
+					if(base==null||base.getErrorCode()!=0){
+						if(base.getErrorCode()==Constant.ErrorCode.USER_NOT_LOGIN){
+							msg.what=Constant.HandlerMessageCode.USER_NOT_LOGIN;
+						}
+						else
+						{
+							msg.what=Constant.HandlerMessageCode.COLLECTION_OPERATE_FAIL;
+							msg.obj="操作出错" ;
+						}
+					}else{
+						msg.what=Constant.HandlerMessageCode.COLLECTION_OPERATE_SUCCESS;
+					}
+				} catch (AppException e)
+				{
+					e.printStackTrace();
+					msg.what=Constant.HandlerMessageCode.COLLECTION_OPERATE_FAIL;
+					msg.obj=e ;
+				}
+				appContext.baseActivity.mHandler.sendMessage(msg);
+			}
+		}).start();
+	}
+	public void getComments(final long contentid,final int page){
+		new Thread(new Runnable()
+		{
+			
+			@Override
+			public void run()
+			{
+				Message msg=new Message();
+				try
+				{
+					List<XComment> commentlist=HttpUtil.getComments(appContext, contentid, page);
+					if(commentlist==null){
+						msg.what=Constant.HandlerMessageCode.GET_COMMENTS_FAIL;
+						msg.obj="获取数据出错";
+						return ;
+					}
+					msg.what=Constant.HandlerMessageCode.GET_COMMENT_SUCCESS;
+					msg.obj=commentlist;
+				} catch (AppException e)
+				{
+					msg.what=Constant.HandlerMessageCode.GET_COMMENTS_FAIL;
+					msg.obj=e ;
+					e.printStackTrace();
+				}
+			}
+		}).start();
+		
 	}
 }

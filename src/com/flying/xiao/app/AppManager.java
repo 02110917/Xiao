@@ -2,6 +2,9 @@ package com.flying.xiao.app;
 
 import java.util.Stack;
 
+import com.flying.xiao.BaseActivity;
+import com.flying.xiao.manager.ContentManager;
+
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
@@ -86,6 +89,10 @@ public class AppManager {
 	 */
 	public void AppExit(Context context) {
 		try {
+			//退出程序后 将 内容保存
+			ContentManager contentManager=ContentManager.getContentMangerShare();
+			AppContext appcontext=(AppContext) ((BaseActivity)context).getApplication();
+			contentManager.writeList(appcontext.contentListPath);
 			finishAllActivity();
 			ActivityManager activityMgr= (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
 			activityMgr.restartPackage(context.getPackageName());
