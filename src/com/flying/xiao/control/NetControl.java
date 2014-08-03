@@ -78,6 +78,7 @@ public class NetControl
 				}
 				else{
 					msg.what = Constant.HandlerMessageCode.MAIN_LOAD_DATA_SUCCESS;//成功
+					msg.arg1=type;
 					msg.obj = xConList;
 					System.out.println("发送消息--"+type);
 				}
@@ -288,6 +289,11 @@ public class NetControl
 			}
 		}).start();
 	}
+	/**
+	 * 获取评论列表
+	 * @param contentid
+	 * @param page
+	 */
 	public void getComments(final long contentid,final int page){
 		new Thread(new Runnable()
 		{
@@ -315,5 +321,74 @@ public class NetControl
 			}
 		}).start();
 		
+	}
+	
+	public void getUserInfos(final int typeid,final int page,final Handler handler){
+		new Thread(new Runnable()
+		{
+			
+			@Override
+			public void run()
+			{
+				Message msg=new Message();
+				try
+				{
+					List<XUserInfo> userInfos=HttpUtil.getUserInfos(appContext, typeid, page);
+					if(userInfos==null){
+						msg.what=Constant.HandlerMessageCode.GET_USERINFOS_FAIL;
+						msg.obj="获取数据出错";
+						return ;
+					}
+					if(typeid==Constant.UserType.User_TYPE_DEPARTMENT)
+						msg.what=Constant.HandlerMessageCode.GET_USERINFOS_BUSINESS_SUCCESS;
+					else
+						msg.what=Constant.HandlerMessageCode.GET_USERINFOS_DEPARTMENT_SUCCESS;
+					msg.obj=userInfos;
+				} catch (AppException e)
+				{
+					msg.what=Constant.HandlerMessageCode.GET_USERINFOS_FAIL;
+					msg.obj=e ;
+					e.printStackTrace();
+				}
+				handler.sendMessage(msg);
+			}
+		}).start();
+	}
+	public void addFriend(final long userId,final Handler handler){
+		new Thread(new Runnable()
+		{
+			
+			@Override
+			public void run()
+			{
+				Message msg=new Message();
+				try
+				{
+					Base base=HttpUtil.addFriend(appContext, userId);
+					if(base.getErrorCode()!=0){
+						if(base.getErrorCode()==Constant.ErrorCode.USER_NOT_LOGIN){
+							msg.what=Constant.HandlerMessageCode.USER_NOT_LOGIN;
+							msg.obj=base.getErrorMsg() ;
+						}
+						else if(base.getErrorCode()==Constant.ErrorCode.ADD_FRIEND_IS_YOUR_FRIEND_ALERADY){
+							msg.what=Constant.HandlerMessageCode.ADD_FRIEND_IS_YOUR_FRIEND_ALERADY;
+							msg.obj=base.getErrorMsg() ;
+						}else
+						{
+							msg.what=Constant.HandlerMessageCode.ADD_FRIEND_FAIL;
+							msg.obj=base.getErrorMsg() ;
+						}
+					}else{
+						msg.what=Constant.HandlerMessageCode.ADD_FRIEND_SUCCESS;
+					}
+				} catch (AppException e)
+				{
+					e.printStackTrace();
+					msg.what=Constant.HandlerMessageCode.ADD_FRIEND_FAIL;
+					msg.obj=e ;
+				}
+				handler.sendMessage(msg);
+			}
+		}).start();
 	}
 }

@@ -1,12 +1,32 @@
 package com.flying.xiao.entity;
 
 
-public class XUserInfo extends Base 
+public class XUserInfo extends Base
 {
 	private Long id;
 	private String userName;
 	private String userPsd;
 	private String userGerenshuoming;
+	private String userRealName;
+	private Boolean userSex;
+	private String userHeadImageUrl;
+	private String userQq;
+	private String userEmail;
+	private Integer userTypeId;
+	private Integer userJifen;
+	private Integer userFuns;
+	private Boolean userIsQiandao;
+	private String userPhone;
+	private boolean isMeFriend ;
+	
+	public boolean isMeFriend()
+	{
+		return isMeFriend;
+	}
+	public void setMeFriend(boolean isMeFriend)
+	{
+		this.isMeFriend = isMeFriend;
+	}
 	public Long getId()
 	{
 		return id;
@@ -119,14 +139,4 @@ public class XUserInfo extends Base
 	{
 		this.userPhone = userPhone;
 	}
-	private String userRealName;
-	private Boolean userSex;
-	private String userHeadImageUrl;
-	private String userQq;
-	private String userEmail;
-	private Integer userTypeId;
-	private Integer userJifen;
-	private Integer userFuns;
-	private Boolean userIsQiandao;
-	private String userPhone;
 }

@@ -35,11 +35,9 @@ import android.graphics.BitmapFactory;
 import com.flying.xiao.app.AppContext;
 import com.flying.xiao.app.AppException;
 import com.flying.xiao.common.URLs;
-import com.flying.xiao.constant.Constant;
 import com.flying.xiao.entity.Base;
 import com.flying.xiao.entity.XComment;
 import com.flying.xiao.entity.XContent;
-import com.flying.xiao.entity.XContentDetail;
 import com.flying.xiao.entity.XGoodType;
 import com.flying.xiao.entity.XPraise;
 import com.flying.xiao.entity.XUserInfo;
@@ -694,5 +692,54 @@ public class HttpUtil
 			throw AppException.network(e);
 		}
 		return commentList ;
+	}
+	
+	/**
+	 * 
+	 * @param appContext
+	 * @param userType 用户类型 1:个人  2:部门 	3:商家
+	 * @param page 页数
+	 * @return
+	 * @throws AppException 
+	 */
+	public static List<XUserInfo> getUserInfos(AppContext appContext,int userType,int page) throws AppException{
+		List<XUserInfo> userList=null;
+		String result="";
+		String url=URLs.URL_GETUSERINFOS+"?type="+userType+"&page="+page;
+		try
+		{
+			result=http_get(appContext, url);
+			System.out.println("json---" + result);
+			Gson gson = new Gson();
+			try
+			{
+				userList = gson.fromJson(result, new TypeToken<List<XUserInfo>>()
+			{
+			}.getType());
+			}
+			catch(JsonSyntaxException e){
+				e.printStackTrace();
+			}
+		} catch (AppException e)
+		{
+			e.printStackTrace();
+			if (e instanceof AppException)
+				throw (AppException) e;
+			throw AppException.network(e);
+		}
+		return userList;
+	}
+	public static Base addFriend(AppContext appContext,long userId) throws AppException{
+		Base base=null;
+		String url=URLs.URL_ADD_FRIEND+"?userId="+userId;
+		String json=http_get(appContext,url);
+		try
+		{
+			base=new Base() ;
+			base=base.jsonToBase(json);
+		}catch(JsonSyntaxException e){
+			e.printStackTrace();
+		}
+		return base ;
 	}
 }

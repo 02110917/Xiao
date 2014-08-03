@@ -77,18 +77,19 @@ public class MainContentFragment extends Fragment implements PullDownListView.On
 					break;
 
 				case Constant.HandlerMessageCode.MAIN_LOAD_DATA_SUCCESS:
-					mPullDownListview.onRefreshComplete();
-					mPullDownListview.onLoadMoreComplete();
-					if(mCurPage==0) //如果是刷新获得重新加载  则清楚之前的数据
-						appContext.contentManager.getContentListByType(conType).clear();
-					List<XContent> list=(List<XContent>) msg.obj;
-					if(list.size()==Constant.MAX_PAGE_COUNT)
-						mPullDownListview.setMore(true);
-					else if(list.size()<Constant.MAX_PAGE_COUNT)
-						mPullDownListview.setMore(false);
-					appContext.contentManager.getContentListByType(conType).addAll(list);
-					mAdapter.notifyDataSetChanged();
-
+					if(msg.arg1==conType){
+						mPullDownListview.onRefreshComplete();
+						mPullDownListview.onLoadMoreComplete();
+						if(mCurPage==0) //如果是刷新获得重新加载  则清楚之前的数据
+							appContext.contentManager.getContentListByType(conType).clear();
+						List<XContent> list=(List<XContent>) msg.obj;
+						if(list.size()==Constant.MAX_PAGE_COUNT)
+							mPullDownListview.setMore(true);
+						else if(list.size()<Constant.MAX_PAGE_COUNT)
+							mPullDownListview.setMore(false);
+						appContext.contentManager.getContentListByType(conType).addAll(list);
+						mAdapter.notifyDataSetChanged();
+					}
 					break;
 				default:
 					break;

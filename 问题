@@ -1,0 +1,13 @@
+1.Fragment 嵌套 
+
+若要在一个Fragment中嵌套另外的Fragment 
+ 那么在Fragment中， 就不能使用getActivity().getFragmentManager() 这样会使得嵌套的Fragment不显示
+ 要使用getChildFragmentManager()
+ 
+ 
+ Handler   问题
+ 
+ Handler  运行的自己的独有的线程 
+ 
+ 如果一个activity destory 了  但是其里面的 Handler的线程还没有结束 所有， 当handler有消息时， 再其他的activity里也能接收到。 
+ 

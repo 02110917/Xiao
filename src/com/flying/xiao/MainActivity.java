@@ -14,8 +14,10 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 
 import com.flying.xiao.adapter.FragmentTabAdapter;
+import com.flying.xiao.adapter.FragmentTabAdapter.OnRgsExtraCheckedChangedListener;
 import com.flying.xiao.app.AppContext;
 import com.flying.xiao.common.UIHelper;
 import com.flying.xiao.fragment.CommunityFragment;
@@ -39,11 +41,12 @@ public class MainActivity extends BaseActivity
 	private RadioGroup mRadioGroup;
 	public List<Fragment> fragments = new ArrayList<Fragment>();
 	private ImageView fbSetting;
-
+	private TextView mainHeadTitle ;
 	private QuickActionWidget mGrid;// 快捷栏控件
 
 	private AppContext appContext;// 全局Context
 
+	private String[]titles=new String[]{"资讯","生活","社区","个人"};
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
@@ -80,6 +83,7 @@ public class MainActivity extends BaseActivity
 
 	private void initMain()
 	{
+		mainHeadTitle=(TextView)findViewById(R.id.main_head_title);
 		mRadioGroup = (RadioGroup) findViewById(R.id.footbargroup);
 		mainFragment = new MainFragment();
 		lifeFragment = new LifeFragment();
@@ -91,6 +95,15 @@ public class MainActivity extends BaseActivity
 		fragments.add(meFragment);
 		FragmentTabAdapter tabAdapter = new FragmentTabAdapter(this, fragments, R.id.main_scrolllayout,
 				mRadioGroup);
+		tabAdapter.setOnRgsExtraCheckedChangedListener(new OnRgsExtraCheckedChangedListener()
+		{
+			
+			@Override
+			public void OnRgsExtraCheckedChanged(RadioGroup radioGroup, int checkedId, int index)
+			{
+				mainHeadTitle.setText(titles[index]);
+			}
+		});
 	}
 
 	/**

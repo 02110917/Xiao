@@ -9,12 +9,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View;
-import android.view.animation.AlphaAnimation;
-import android.view.animation.Animation;
-import android.view.animation.Animation.AnimationListener;
-
-import com.flying.xiao.MainActivity;
-import com.flying.xiao.R;
 
 /**
  * 应用程序启动类：显示欢迎界面并跳转到主界面

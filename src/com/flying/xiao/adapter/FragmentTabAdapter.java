@@ -130,10 +130,8 @@ public class FragmentTabAdapter implements RadioGroup.OnCheckedChangeListener{
     /**
      *  切换tab额外功能功能接口
      */
-    static class OnRgsExtraCheckedChangedListener{
-        public void OnRgsExtraCheckedChanged(RadioGroup radioGroup, int checkedId, int index){
-
-        }
+  public  interface OnRgsExtraCheckedChangedListener{
+        public void OnRgsExtraCheckedChanged(RadioGroup radioGroup, int checkedId, int index);
     }
 
 }

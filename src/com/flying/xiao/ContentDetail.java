@@ -445,7 +445,7 @@ public class ContentDetail extends BaseActivity
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id)
 			{
 
-				XComment com = lvCommentAdapter.getMainCommentList().get(position - 1);
+				XComment com = lvCommentAdapter.getMainCommentList().get(position);
 				// 跳转--回复评论界面
 				if(appContext.isLogin()){
 					UIHelper.showCommentReply(ContentDetail.this, com.getPlId(), con.getId(), appContext

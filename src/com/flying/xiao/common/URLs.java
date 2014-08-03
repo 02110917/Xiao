@@ -23,6 +23,8 @@ public class URLs implements Serializable {
 	public final static String URL_GET_MARKET_TYPE =HOST+ "/XiaoServer/servlet/GetMarketType";
 	public final static String URL_CollectionOperate =HOST+ "/XiaoServer/servlet/CollectionOperate";
 	public final static String URL_GETCOMMENTS =HOST+ "/XiaoServer/servlet/GetComments";
+	public final static String URL_GETUSERINFOS =HOST+ "/XiaoServer/servlet/GetUserInfos";
+	public final static String URL_ADD_FRIEND =HOST+ "/XiaoServer/servlet/AddFriend";
 	
 	
 	}

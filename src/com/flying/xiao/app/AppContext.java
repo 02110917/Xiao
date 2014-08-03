@@ -19,7 +19,7 @@ import android.net.NetworkInfo;
 import com.flying.xiao.BaseActivity;
 import com.flying.xiao.common.StringUtils;
 import com.flying.xiao.entity.XUserInfo;
-import com.flying.xiao.manager.ContentManager;
+import com.flying.xiao.manager.ListManager;
 
 /**
  * 全局应用程序类：用于保存和调用全局应用配置及访问网络数据
@@ -37,7 +37,7 @@ public class AppContext extends Application
 	private boolean login = false; // 登录状态
 	private XUserInfo userInfo = null;
 
-	public  ContentManager contentManager ;
+	public  ListManager contentManager ;
 	public void setUserInfo(XUserInfo userInfo)
 	{
 		this.userInfo = userInfo;
@@ -57,7 +57,7 @@ public class AppContext extends Application
 		this.headImagePath=dirPath + "/xiao_headimage.png";
 		this.userInfoPath=dirPath + "/xiao_userinfo";
 		this.contentListPath=dirPath+"/xiao_contentlist";
-		contentManager=ContentManager.getContentMangerShare();
+		contentManager=ListManager.getContentMangerShare();
 		contentManager.readList(contentListPath);
 	}
 	
