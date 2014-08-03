@@ -3,6 +3,7 @@ package com.flying.xiao.entity;
 import java.sql.Timestamp;
 import java.util.List;
 
+
 public class XContent extends Base
 {
 	private Long id;
@@ -23,6 +24,16 @@ public class XContent extends Base
 	private List<XComment> comments;
 	private String conSummary;
 	
+	
+//	@Override
+//	public <T> void copy(T t)
+//	{
+//		super.copy(t);
+//		this.setUserId(((Content)t).getUserInfo().getId());
+//		if (this.getConImageUrl() == null)
+//			this.setConImageUrl(((Content)t).getUserInfo().getUserHeadImageUrl());
+//		this.setUserRealNama(((Content)t).getUserInfo().getUserRealName());
+//	}
 	public List<XImage> getImages()
 	{
 		return images;
