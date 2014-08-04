@@ -51,6 +51,9 @@
          <activity
             android:name="com.flying.xiao.MyHomeActivity"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+          <activity
+            android:name="com.flying.xiao.DepartmentDetail"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
         <activity
             android:name="com.flying.xiao.LoginDialog"
             android:configChanges="keyboardHidden|orientation"

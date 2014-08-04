@@ -2,6 +2,7 @@ package com.flying.xiao.adapter;
 
 import java.util.List;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
@@ -14,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.flying.xiao.R;
+import com.flying.xiao.app.AppContext;
 import com.flying.xiao.common.StringUtils;
 import com.flying.xiao.common.UIHelper;
 import com.flying.xiao.common.URLs;
@@ -33,6 +35,7 @@ public class ListViewCommunityAdapter extends BaseAdapter
 	private LayoutInflater listContainer;// 视图容器
 	private int itemViewResource;// 自定义项视图源
 	private Handler handler;
+	private AppContext appContext ;
 	static class ListItemView
 	{ // 自定义控件集合
 		public ImageView face;
@@ -54,6 +57,7 @@ public class ListViewCommunityAdapter extends BaseAdapter
 		this.listContainer = LayoutInflater.from(context); // 创建视图容器并设置上下文
 		this.itemViewResource = resource;
 		this.listItems = data;
+		appContext=(AppContext) ((Activity)context).getApplication();
 	}
 	@Override
 	public int getCount()
@@ -128,10 +132,12 @@ public class ListViewCommunityAdapter extends BaseAdapter
 				{
 				case Constant.HandlerMessageCode.USER_NOT_LOGIN:
 					UIHelper.ToastMessage(context, R.string.user_login_out_of_date);
+					listItemView.collection.setImageResource(R.drawable.head_favorite);
 					UIHelper.showLoginDialog(context);
 					break;
 				case Constant.HandlerMessageCode.ADD_FRIEND_FAIL:
 					UIHelper.ToastMessage(context, "添加失败");
+					listItemView.collection.setImageResource(R.drawable.head_favorite);
 					break ;
 				case Constant.HandlerMessageCode.ADD_FRIEND_IS_YOUR_FRIEND_ALERADY:
 					UIHelper.ToastMessage(context, "您已经添加他为好友啦,不能重复添加");
@@ -153,6 +159,9 @@ public class ListViewCommunityAdapter extends BaseAdapter
 			@Override
 			public void onClick(View v)
 			{
+				if(!appContext.isLogin()){
+					handler.sendEmptyMessage(Constant.HandlerMessageCode.USER_NOT_LOGIN);
+				}
 				if(userInfo.isMeFriend()){
 					handler.sendEmptyMessage(Constant.HandlerMessageCode.ADD_FRIEND_IS_YOUR_FRIEND_ALERADY);
 				}

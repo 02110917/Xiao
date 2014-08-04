@@ -106,9 +106,9 @@ public class ContentDetail extends BaseActivity
 		int index=getIntent().getIntExtra("content", 0);
 		conType = getIntent().getIntExtra("conType", 0);
 		if(conType==Constant.ContentType.CONTENT_TYPE_NEWS)
-			con = appContext.contentManager.getNewsContentList().get(index);
+			con = appContext.listManager.getNewsContentList().get(index);
 		else if(conType==Constant.ContentType.CONTENT_TYPE_ASK)
-			con = appContext.contentManager.getAskContentList().get(index);
+			con = appContext.listManager.getAskContentList().get(index);
 		
 		mBack = (ImageView) findViewById(R.id.content_detail_back);
 		mRefresh = (ImageView) findViewById(R.id.content_detail_refresh);
@@ -131,7 +131,7 @@ public class ContentDetail extends BaseActivity
 
 		mDetail.setEnabled(false);
 
-		mWebView = (WebView) findViewById(R.id.content_detail_webview);
+		mWebView = (WebView) findViewById(R.id.department_detail_webview);
 		mWebView.getSettings().setSupportZoom(true);
 		mWebView.getSettings().setBuiltInZoomControls(true);
 		mWebView.getSettings().setDefaultFontSize(15);

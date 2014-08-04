@@ -69,7 +69,7 @@ public class PullRefreshListView extends ListView implements OnScrollListener
 
 		headView = (LinearLayout) inflater.inflate(R.layout.listview_head, null);
 
-		iv = (ImageView) headView.findViewById(R.id.imageView1);
+		iv = (ImageView) headView.findViewById(R.id.department_detail_head_image);
 		iv.setImageResource(R.drawable.refreshing);
 		animationDrawable = (AnimationDrawable) iv.getDrawable();
 		measureView(headView);

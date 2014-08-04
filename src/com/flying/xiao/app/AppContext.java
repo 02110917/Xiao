@@ -37,7 +37,7 @@ public class AppContext extends Application
 	private boolean login = false; // µÇÂ¼×´Ì¬
 	private XUserInfo userInfo = null;
 
-	public  ListManager contentManager ;
+	public  ListManager listManager ;
 	public void setUserInfo(XUserInfo userInfo)
 	{
 		this.userInfo = userInfo;
@@ -57,8 +57,8 @@ public class AppContext extends Application
 		this.headImagePath=dirPath + "/xiao_headimage.png";
 		this.userInfoPath=dirPath + "/xiao_userinfo";
 		this.contentListPath=dirPath+"/xiao_contentlist";
-		contentManager=ListManager.getContentMangerShare();
-		contentManager.readList(contentListPath);
+		listManager=ListManager.getContentMangerShare();
+		listManager.readList(contentListPath);
 	}
 	
 	

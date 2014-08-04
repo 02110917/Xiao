@@ -339,10 +339,9 @@ public class NetControl
 						msg.obj="获取数据出错";
 						return ;
 					}
-					if(typeid==Constant.UserType.User_TYPE_DEPARTMENT)
-						msg.what=Constant.HandlerMessageCode.GET_USERINFOS_BUSINESS_SUCCESS;
-					else
-						msg.what=Constant.HandlerMessageCode.GET_USERINFOS_DEPARTMENT_SUCCESS;
+					
+					msg.what=Constant.HandlerMessageCode.GET_USERINFOS_SUCCESS;
+					msg.arg1=typeid;
 					msg.obj=userInfos;
 				} catch (AppException e)
 				{

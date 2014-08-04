@@ -56,9 +56,9 @@ public class MainContentFragment extends Fragment implements PullDownListView.On
 		mListView = mPullDownListview.mListView;
 		
 		if(conType==Constant.ContentType.CONTENT_TYPE_MARKET)
-			mAdapter= new ListViewMainContentAdapter(getActivity(), appContext.contentManager.getContentListByType(conType), R.layout.main_fragment_market_listitem,true);
+			mAdapter= new ListViewMainContentAdapter(getActivity(), appContext.listManager.getContentListByType(conType), R.layout.main_fragment_market_listitem,true);
 		else
-			mAdapter = new ListViewMainContentAdapter(getActivity(), appContext.contentManager.getContentListByType(conType), R.layout.main_fragment_news_listitem);
+			mAdapter = new ListViewMainContentAdapter(getActivity(), appContext.listManager.getContentListByType(conType), R.layout.main_fragment_news_listitem);
 		mListView.setAdapter(mAdapter);
 		mPullDownListview.setRefreshListioner(this);
 		mHandler = new Handler()
@@ -81,13 +81,13 @@ public class MainContentFragment extends Fragment implements PullDownListView.On
 						mPullDownListview.onRefreshComplete();
 						mPullDownListview.onLoadMoreComplete();
 						if(mCurPage==0) //如果是刷新获得重新加载  则清楚之前的数据
-							appContext.contentManager.getContentListByType(conType).clear();
+							appContext.listManager.getContentListByType(conType).clear();
 						List<XContent> list=(List<XContent>) msg.obj;
 						if(list.size()==Constant.MAX_PAGE_COUNT)
 							mPullDownListview.setMore(true);
 						else if(list.size()<Constant.MAX_PAGE_COUNT)
 							mPullDownListview.setMore(false);
-						appContext.contentManager.getContentListByType(conType).addAll(list);
+						appContext.listManager.getContentListByType(conType).addAll(list);
 						mAdapter.notifyDataSetChanged();
 					}
 					break;

@@ -84,7 +84,7 @@ public class MarketDetail extends BaseActivity{
 	private void initView()
 	{
 		int index=getIntent().getIntExtra("content", 0);
-		con = appContext.contentManager.getMarketContentList().get(index);
+		con = appContext.listManager.getMarketContentList().get(index);
 		imageUrls=con.getImages();
 		images=new ArrayList<View>();
 		if(imageUrls!=null&&imageUrls.size()>0){

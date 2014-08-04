@@ -78,7 +78,7 @@ public class LostDetail extends BaseActivity{
 	private void initView()
 	{
 		int index=getIntent().getIntExtra("content", 0);
-		con = appContext.contentManager.getLostContentList().get(index);
+		con = appContext.listManager.getLostContentList().get(index);
 		imageUrls=con.getImages();
 		images=new ArrayList<View>();
 		if(imageUrls!=null&&imageUrls.size()>0){

@@ -121,7 +121,7 @@ public class HttpUtil
 	 * @param url
 	 * @throws AppException
 	 */
-	private static String http_get(AppContext appContext, String url) throws AppException
+	private synchronized static String http_get(AppContext appContext, String url) throws AppException
 	{
 		// System.out.println("get_url==> "+url);
 		String cookie = getCookie(appContext);
@@ -212,7 +212,7 @@ public class HttpUtil
 		return null;
 	}
 
-	private static String http_post(AppContext appContext, String url, Map<String, String> params)
+	private synchronized static String http_post(AppContext appContext, String url, Map<String, String> params)
 			throws AppException
 	{
 		String cookie = getCookie(appContext);

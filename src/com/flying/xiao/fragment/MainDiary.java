@@ -55,7 +55,7 @@ public class MainDiary extends Fragment implements PullDownListView.OnRefreshLis
 	{
 		super.onCreate(savedInstanceState);
 		appContext=(AppContext) getActivity().getApplication();
-		mDiaryList=appContext.contentManager.getDiaryContentList();
+		mDiaryList=appContext.listManager.getDiaryContentList();
 	}
 
 	@Override

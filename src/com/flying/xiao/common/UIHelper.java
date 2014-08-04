@@ -21,8 +21,10 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Toast;
 
+import com.flying.xiao.BusinessDetail;
 import com.flying.xiao.CommentPub;
 import com.flying.xiao.ContentDetail;
+import com.flying.xiao.DepartmentDetail;
 import com.flying.xiao.DiaryDetail;
 import com.flying.xiao.LoginDialog;
 import com.flying.xiao.LostDetail;
@@ -111,6 +113,22 @@ public class UIHelper
 		context.startActivity(intent);
 	}
 
+	/**
+	 * 显示社区详情页面
+	 * @param context  上下文
+	 * @param index  索引
+	 * @param type  user type
+	 */
+	public static void showCommunityInfo(Context context,int index,int type){
+		Intent intent = new Intent();
+		intent.putExtra("index", index);		
+		if(type==Constant.UserType.User_TYPE_DEPARTMENT){
+			intent.setClass(context, DepartmentDetail.class);
+		}else if(type==Constant.UserType.User_TYPE_BUSINESS){
+			intent.setClass(context, BusinessDetail.class);
+		}
+		context.startActivity(intent);
+	}
 	/**
 	 * 快捷栏显示登录与登出
 	 * 

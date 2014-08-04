@@ -58,7 +58,7 @@ public class Constant
 		public static final int GET_COMMENTS_FAIL=16;
 		public static final int GET_COMMENT_SUCCESS=17;
 		public static final int GET_USERINFOS_DEPARTMENT_SUCCESS=18;
-		public static final int GET_USERINFOS_BUSINESS_SUCCESS=188;
+		public static final int GET_USERINFOS_SUCCESS=188;
 		public static final int GET_USERINFOS_FAIL=19;
 		public static final int ADD_FRIEND_FAIL=20;
 		public static final int ADD_FRIEND_SUCCESS=21;

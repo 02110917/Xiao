@@ -15,6 +15,7 @@ import android.widget.Button;
 
 import com.flying.xiao.R;
 import com.flying.xiao.adapter.MyFragmentPaperAdapter;
+import com.flying.xiao.constant.Constant;
 /**
  * ÉçÇø
  * @author zhangmin
@@ -30,8 +31,10 @@ public class CommunityFragment extends Fragment
 	public void onCreate(Bundle savedInstanceState)
 	{
 		mFragmentList=new ArrayList<Fragment>();
-		Fragment fragment=new CommunityFragmentDepartment();
-		Fragment fragment1=new CommunityFragmentBusiness();
+		Fragment fragment=new CommunityFragmentTab();
+		Fragment fragment1=new CommunityFragmentTab();
+		((CommunityFragmentTab)fragment).setType(Constant.UserType.User_TYPE_DEPARTMENT);
+		((CommunityFragmentTab)fragment1).setType(Constant.UserType.User_TYPE_BUSINESS);
 		mFragmentList.add(fragment);
 		mFragmentList.add(fragment1);
 		super.onCreate(savedInstanceState);
