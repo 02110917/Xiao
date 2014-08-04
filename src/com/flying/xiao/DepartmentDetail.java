@@ -1,5 +1,6 @@
 package com.flying.xiao;
 
+import com.flying.xiao.common.UIHelper;
 import com.flying.xiao.common.URLs;
 import com.flying.xiao.entity.XUserInfo;
 import com.flying.xiao.util.ImageManager2;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 
 public class DepartmentDetail extends BaseActivity{
 
+	private ImageView mBack ;
 	private ImageView mHeadImage ; // 部门头像
 	private TextView mName ; //部门名称
 	private TextView mDescribe ; //描述
@@ -28,7 +30,8 @@ public class DepartmentDetail extends BaseActivity{
 		initData();
 	}
 	private void initView(){
-		mHeadImage=(ImageView)findViewById(R.id.department_detail_head_image);
+		mBack = (ImageView) findViewById(R.id.content_detail_back);
+		mHeadImage=(ImageView)findViewById(R.id.department_head_image);
 		mName=(TextView)findViewById(R.id.department_name);
 		mDescribe=(TextView)findViewById(R.id.department_describe);
 		mAddfriend=(Button)findViewById(R.id.department_add_friend);
@@ -37,11 +40,18 @@ public class DepartmentDetail extends BaseActivity{
 		int index=getIntent().getIntExtra("index", 0);
 		userInfo=appContext.listManager.getDepartmentList().get(index);
 		String url=URLs.HOST+userInfo.getUserHeadImageUrl();
-		mHeadImage.setTag(url);
 		ImageManager2.from(this).displayImage(mHeadImage, url, -1);
+		mHeadImage.setTag(url);
 		mName.setText(userInfo.getUserRealName());
 		mDescribe.setText( userInfo.getUserGerenshuoming());
+		String body = UIHelper.WEB_STYLE + userInfo.getUserInfoDetail()
+				+ "<div style=\"margin-bottom: 80px\" />";
+		body = body.replaceAll("(<img[^>]*?)\\s+width\\s*=\\s*\\S+", "$1");
+		body = body.replaceAll("(<img[^>]*?)\\s+height\\s*=\\s*\\S+", "$1");
+		//
+		mInfo.loadDataWithBaseURL(null, body, "text/html", "utf-8", null);
 		mAddfriend.setOnClickListener(clickListener);
+		mBack.setOnClickListener(UIHelper.finish(this));
 	}
 	private void initData(){
 		

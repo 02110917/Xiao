@@ -18,7 +18,7 @@ public class XUserInfo extends Base
 	private Boolean userIsQiandao;
 	private String userPhone;
 	private boolean isMeFriend ;
-	
+	private String userInfoDetail;
 	public boolean isMeFriend()
 	{
 		return isMeFriend;
@@ -26,6 +26,15 @@ public class XUserInfo extends Base
 	public void setMeFriend(boolean isMeFriend)
 	{
 		this.isMeFriend = isMeFriend;
+	}
+	
+	public String getUserInfoDetail()
+	{
+		return userInfoDetail;
+	}
+	public void setUserInfoDetail(String userInfoDetail)
+	{
+		this.userInfoDetail = userInfoDetail;
 	}
 	public Long getId()
 	{

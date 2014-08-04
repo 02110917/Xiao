@@ -66,8 +66,10 @@ public class CommunityFragmentTab extends Fragment
 	public void onCreate(Bundle savedInstanceState)
 	{
 		manager=ListManager.getContentMangerShare();
-		userInfolist=manager.getBusinessList();
-			
+		if(type==Constant.UserType.User_TYPE_BUSINESS)
+			userInfolist=manager.getBusinessList();
+		else if(type==Constant.UserType.User_TYPE_DEPARTMENT)
+			userInfolist=manager.getDepartmentList();
 		super.onCreate(savedInstanceState);
 	}
 	
